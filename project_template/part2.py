@@ -1,6 +1,6 @@
 def fn_lire_data(nom_data: str) -> list:
     with open(f"{nom_data}_input.txt", "r") as puzzle_input:
-        return [ligne.strip() for ligne in puzzle_input.readlines()]
+        return puzzle_input.read().split("\n")
 
 
 def fn_prep_data(p_puzzle_data: any) -> any:
