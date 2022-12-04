@@ -1,5 +1,7 @@
 import string
 
+import aoc_utils
+
 
 def fn_lire_data(nom_data: str) -> list:
     with open(f"{nom_data}_input.txt", "r") as puzzle_input:
@@ -14,10 +16,7 @@ def do_solution_2() -> int:
     ls_rucksacks = fn_lire_data("puzzle")
 
     # Séparer par équipe de 3
-    ls_equipe_3 = []
-    equipe = []
-    for i in range(0, len(ls_rucksacks), 3):
-        ls_equipe_3.append(ls_rucksacks[i:i + 3])
+    ls_equipe_3 = aoc_utils.sous_diviser_iter(ls_rucksacks, 3)
 
     # Trouver ce qui est pareil dans chaque sac
     ls_pareils = []
