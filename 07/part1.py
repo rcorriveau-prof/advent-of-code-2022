@@ -45,7 +45,7 @@ def do_solution_1() -> int:
     ls_tous_dossiers = [x[0] for x in os.walk(r"C:\Users\Remy\drive_ecole\AdventOfCode\2022\07\root")]
 
     for dossier in ls_tous_dossiers:
-        ls_fichiers = [x[2] for x in os.walk(dossier)]
+        ls_fichiers = [x[2] for x in os.walk(dossier)]  # Tous les noms de fichiers dans le dossier et sous-dossiers
         print(ls_fichiers)
         somme = 0
         for fichiers in ls_fichiers:
@@ -53,6 +53,7 @@ def do_solution_1() -> int:
                 somme += sum([int(fichier) for fichier in fichiers])
         ls_sommes.append(somme)
 
+    # Somme des dossiers qui utilise moins de 100000 espace.
     somme = sum(int(espace) for espace in ls_sommes if espace <= 100_000)
 
     return somme
