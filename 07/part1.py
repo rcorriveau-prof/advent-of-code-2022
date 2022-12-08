@@ -1,69 +1,61 @@
+import os
+
+
 def fn_lire_data(nom_data: str) -> list:
     with open(f"{nom_data}_input.txt", "r") as puzzle_input:
         return puzzle_input.read().split("\n")
 
 
-def creer_arborescence(ls_commandes: list) -> dict:
-    dt_dossiers = {"/": {"1": 0, "2": []}}  # Les dossiers et leur contenu cle 1 = total fichiers, cle 2 = liste dossier
-    ls_path = []  # L'arborescence des dossiers
-    cwd = "/"  # Le nom du dossier où on travaille
-    for commande in ls_commandes:
+def creer_arborescence_pour_vrai(ls_commandes: list):
+    for commande in ls_commandes[2:]:
         if commande.startswith("$"):
             # Gérer les commandes ls
             if "$ ls" in commande:
                 continue  # Fait rien
 
-            # Gérer les commandes cd
-            _, __, cwd = commande.split(" ")
-            if cwd == "..":
-                ls_path.pop()
-            else:
-                ls_path.append(cwd)
+            else:  # Gérer les commandes cd
+                _, __, cwd = commande.split(" ")
+                if cwd == "..":  # On remonte dans le parent
+                    os.chdir(os.pardir)
+                else:  # On descend dans l'enfant
+                    os.chdir(cwd)
 
         else:
-            # Vérifier que le dossier existe, sinon on le crée
-            cwd = ls_path[-1]
-            if cwd not in dt_dossiers.keys():
-                dt_dossiers[ls_path[-1]] = {"1": 0, "2": []}
-
             partie1, partie2 = commande.split(" ")
 
-            # Gérer les fichiers
+            # Gérer les fichiers, partie1 -> taille du fichier
             if partie1.isnumeric():  # Additionner l'espace fichier
-                dt_dossiers[cwd]["1"] += int(partie1)
+                os.system(f"echo {partie1} > {partie1}")
 
-            # Gérer les commandes dir
+            # Gérer les commandes dir, partie 2 -> nom du dossier
             else:
-                dt_dossiers[cwd]["2"].append(partie2)  # Ajouter à la liste de dossier contenus
-
-    return dt_dossiers
-
-
-def somme_un_dossier(dossier: str, dt_dossiers: dict) -> int:
-    return dt_dossiers[dossier]["1"]
-
-
-def somme_sous_dossier(dossier: str, dt_dossiers: dict) -> int:
-    somme_dossier = 0
-    for sous_dossier in dt_dossiers[dossier]["2"]:
-        somme_dossier += somme_un_dossier(sous_dossier, dt_dossiers)
-    return somme_dossier
+                os.mkdir(partie2)  # Créer le dossier
 
 
 def do_solution_1() -> int:
-    ls_commandes = fn_lire_data("test")
-    dt_arbo = creer_arborescence(ls_commandes)
+    ls_commandes = fn_lire_data("puzzle")
 
-    ls_somme = []
-    for dossier in dt_arbo.keys():
-        somme_dossier = dt_arbo[dossier]["1"]
-        for sous_dossier in dt_arbo[dossier]["2"]:
-            somme_dossier += somme_un_dossier(sous_dossier, dt_arbo)
-        ls_somme.append(somme_dossier)
+    os.chdir(r"C:\Users\Remy\drive_ecole\AdventOfCode\2022\07\root")
 
-    print(dt_arbo)
+    creer_arborescence_pour_vrai(ls_commandes)
 
-    return ls_somme
+    ls_sommes = []
+    # Trouve tous les dossiers et sous-dossiers à partir de root.
+    # os.walk retourne : (dirpath, dirnames, filenames)
+    ls_tous_dossiers = [x[0] for x in os.walk(r"C:\Users\Remy\drive_ecole\AdventOfCode\2022\07\root")]
+
+    for dossier in ls_tous_dossiers:
+        ls_fichiers = [x[2] for x in os.walk(dossier)]
+        print(ls_fichiers)
+        somme = 0
+        for fichiers in ls_fichiers:
+            if fichiers:
+                somme += sum([int(fichier) for fichier in fichiers])
+        ls_sommes.append(somme)
+
+    somme = sum(int(espace) for espace in ls_sommes if espace <= 100_000)
+
+    return somme
 
 
 if __name__ == "__main__":
