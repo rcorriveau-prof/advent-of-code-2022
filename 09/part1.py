@@ -12,8 +12,6 @@ def do_solution_1() -> int:
     ls_cases_T = []
     for direction, repetitions in ls_moves:
         for _ in range(repetitions):
-            print(f"H : {coord_H}")
-            print(f"T : {coord_T}")
             ls_cases_T.append(tuple(coord_T))
             # Bouger H
             if direction == "R":
@@ -34,8 +32,6 @@ def do_solution_1() -> int:
                 coordonnees_acceptables_x.append(xH + i)
                 coordonnees_acceptables_y.append(yH + i)
             # Bouge PAS T : même case, adjacent côté ou diagonale
-            print(f"coordonnees_acceptables_x : {coordonnees_acceptables_x}")
-            print(f"coordonnees_acceptables_y : {coordonnees_acceptables_y}")
             if xT in coordonnees_acceptables_x and yT in coordonnees_acceptables_y:
                 continue
 
